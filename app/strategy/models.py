@@ -9,4 +9,4 @@ class StrategyElement(models.Model):
     title = models.CharField(max_length=300)
     operation = models.CharField(max_length=300)
     # variable = test lock branch 
-    # new branch mvp
+    # new branch dev

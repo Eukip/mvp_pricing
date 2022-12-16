@@ -40,3 +40,28 @@ def populate_products_excel(article_provider, new_price_before_discount,
     df.loc[row_to_update, "Согласованная скидка, %"] = agreed_discount
     df.to_excel("output.xlsx")
 
+
+def populate_excel(data):
+    df = pd.read_excel(os.getcwd() + "/app/parsing/7eb50656ea82adcb.xlsx")
+    for item in data:
+        print(item.keys())
+        item_key = list(item.keys())[0]
+        row_to_update = df["Артикул поставщика"] == str(item_key)
+        df.loc[row_to_update, "Новая розн. цена (до скидки)"] = item[item_key]["new_price"]
+        df.loc[row_to_update, "Согласованная скидка, %"] = item[item_key]["agreed_discount"]
+    df.to_excel("output.xlsx")
+
+
+var = [{
+    '7st_351144_030864-WN79/1': {
+        'new_price': 100,
+        'agreed_discount': 10
+    }
+},
+    {
+        'buy2_N1ME0144/1': {
+            'new_price': 100,
+            'agreed_discount': 10
+        }
+    }
+]

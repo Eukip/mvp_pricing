@@ -50,7 +50,7 @@ class Product(models.Model):
     current_discount = models.PositiveIntegerField(blank=True, null=True)
     recommended_discount = models.PositiveIntegerField(blank=True, null=True)
     agreed_discount = models.PositiveIntegerField(blank=True, null=True)
-    cuurent_discount_promo = models.PositiveIntegerField(blank=True, null=True)
+    cuurent_discount_promo = models.PositiveIntegerField(blank=True, null=True)  # текущая скидка на сайте
     new_discount_promo = models.PositiveIntegerField(blank=True, null=True)
     promotional_price = models.PositiveIntegerField(blank=True, null=True)
     standart_price = models.PositiveIntegerField(blank=True, null=True)
@@ -72,3 +72,22 @@ class Product(models.Model):
 
     def __str__(self) -> str:
         return self.full_title
+
+
+class Competitor(models.Model):
+    title = models.CharField(max_length=300, blank=True, null=True)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, blank=True, null=True, related_name='competitor_product')
+
+    def __str__(self) -> str:
+        return self.title + self.product.title
+
+
+class AnalogProduct(models.Model):
+    title = models.CharField(max_length=300)
+    article = models.CharField(max_length=300, blank=True, null=True)
+    url = models.URLField(blank=True, null=True)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True, related_name='analogproduct_product')
+    competitor = models.ForeignKey(Competitor, on_delete=models.SET_NULL, blank=True, null=True, related_name='analogproduct_competitor')
+
+    def __str__(self) -> str:
+        return 'Аналог' + self.id + " " + self.product.title

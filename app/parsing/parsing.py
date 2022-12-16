@@ -13,7 +13,6 @@ def parse_excel():
                      "Артикул поставщика": df["Артикул поставщика"][item - 1],
                      "Предмет": df["Предмет"][item - 1],
                      "Коллекция": df["Коллекция"][item - 1],
-                     "Артикул поставщика": df["Артикул поставщика"][item - 1],
                      "Номенклатура (код 1С)": df["Номенклатура (код 1С)"][item - 1],
                      "Последний баркод": df["Последний баркод"][item - 1],
                      "Количество дней на сайте": df["Количество дней на сайте"][item - 1],
@@ -31,3 +30,13 @@ def parse_excel():
                      }
         result["item_" + str(item)] = temp_dict
     return result
+
+
+def populate_products_excel(article_provider, new_price_before_discount,
+                            agreed_discount):
+    df = pd.read_excel(os.getcwd() + "/app/parsing/7eb50656ea82adcb.xlsx")
+    row_to_update = df["Артикул поставщика"] == str(article_provider)
+    df.loc[row_to_update, "Новая розн. цена (до скидки)"] = new_price_before_discount
+    df.loc[row_to_update, "Согласованная скидка, %"] = agreed_discount
+    df.to_excel("output.xlsx")
+

@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
-
 User = get_user_model()
 
 
@@ -12,12 +11,13 @@ class Category(models.Model):
     def __str__(self) -> str:
         return self.title
 
+
 class SubCategory(models.Model):
     title = models.CharField(max_length=300)
     related_category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self) -> str:
-        return self.title + ' '+ str(self.related_category.title)
+        return self.title + ' ' + str(self.related_category.title)
 
 
 class SubSubCategory(models.Model):

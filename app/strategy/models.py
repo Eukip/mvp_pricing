@@ -11,25 +11,21 @@ class Strategy(models.Model):
         return self.title + ' ' + str(self.product.full_title)
 
 
-# todo Додумать модельку элемента стратегии
-class StrategyElement(models.Model):
-    PLUS = '+'
-    EQUATION = '='
-    MINUS = '-'
-    MULTIPLY = '*'
-    DIVIDE = '/'
-    BASIC_OPERATIONS = [
-        (PLUS, '+'),
-        (EQUATION, '='),
-        (MINUS, '-'),
-        (MULTIPLY, '*'),
-        (DIVIDE, '/'),
+class StrategyElementVariable(models.Model):
+    MEDIAN_PRICES_C = 'медианная цена конкурентов'
+    M_POPULAR_PRICE_C = 'мода цен конкурентов'
+    MIN_PRICE_C = 'минимальная цена конкурентов'
+    AVERAGE_PRICE_C = 'средняя цена конкурентов'
+    MAX_PRICE_C = 'максимальная цена конкурентов'
+    BASIC_VARIABLES = [
+        (MEDIAN_PRICES_C, 'медианная цена конкурентов'),
+        (M_POPULAR_PRICE_C, 'мода цен конкурентов'),
+        (MIN_PRICE_C, 'минимальная цена конкурентов'),
+        (AVERAGE_PRICE_C, 'средняя цена конкурентов'),
+        (MAX_PRICE_C, 'максимальная цена конкурентов'),
     ]
-    title = models.CharField(max_length=300)
-    operation = models.CharField(max_length=300, choices=BASIC_OPERATIONS, default=EQUATION, blank=True, null=True)
-    custom_value = models.PositiveIntegerField(blank=True, null=True)
-    strategy = models.ForeignKey(Strategy, on_delete=models.SET_NULL, blank=True, null=True, related_name='strategyelemnt_strategy')
-    
+    title = models.CharField(max_length=300, choices=BASIC_VARIABLES, blank=True, null=True)
+    custom_variable = models.IntegerField(blank=True, null=True)
 
     @property
     def median_prices_competitors(self):
@@ -37,22 +33,6 @@ class StrategyElement(models.Model):
 
     @property
     def most_popular_price_competitors(self):
-        pass
-
-    @property
-    def quantity_competitors(self):
-        pass
-
-    @property
-    def quantity_competitors_with_prices(self):
-        pass
-
-    @property
-    def quantity_competitors_with_product_in(self):
-        pass
-
-    @property
-    def quantity_competitors_with_prices_product_in(self):
         pass
 
     @property
@@ -66,3 +46,59 @@ class StrategyElement(models.Model):
     @property
     def max_price_competitors(self):
         pass
+
+
+class StrategyOperation(models.Model):
+    PLUS = '+'
+    EQUATION = '='
+    MINUS = '-'
+    MULTIPLY = '*'
+    DIVIDE = '/'
+    BASIC_OPERATIONS = [
+        (PLUS, '+'),
+        (EQUATION, '='),
+        (MINUS, '-'),
+        (MULTIPLY, '*'),
+        (DIVIDE, '/'),
+    ]
+    operation = models.CharField(max_length=300, choices=BASIC_OPERATIONS, default=EQUATION, blank=True, null=True)
+    custom_value = models.PositiveIntegerField(blank=True, null=True)
+    variable = models.ForeignKey(StrategyElementVariable, on_delete=models.SET_NULL, null=True, blank=True)
+    strategy = models.ForeignKey(Strategy, on_delete=models.SET_NULL, blank=True, null=True, related_name='strategyelemnt_strategy')
+
+    def __str__(self) -> str:
+        return 'Операция' + str(self.id) + 'стратегии' + str(self.strategy.id)
+
+
+class StrategyLogicOperation(models.Model):
+    LESS = '<'
+    EQUAL = '=='
+    GREATER = '>'
+    NOTEQUAL = '!='
+    LESSOREQUAL = '<='
+    GREATEROREQUAL = '>='
+    BASIC_OPERATIONS = [
+        (LESS, '<'),
+        (EQUAL, '=='),
+        (GREATER, '>'),
+        (NOTEQUAL, '!='),
+        (LESSOREQUAL, '<='),
+        (GREATEROREQUAL, '>=')
+    ]
+    operation = models.CharField(max_length=300, choices=BASIC_OPERATIONS, default=EQUAL, blank=True, null=True)
+    first_variable = models.ForeignKey(StrategyElementVariable, on_delete=models.SET_NULL, blank=True, null=True, related_name='first_logic_variable')
+    second_variable = models.ForeignKey(StrategyElementVariable, on_delete=models.SET_NULL, blank=True, null=True, related_name='second_logic_variable')
+
+
+class StrategyLogicOperationResult(models.Model):
+    TRUE = 'Истина'
+    FALSE = 'Ложь'
+    BASIC_RESULTS = [
+        (TRUE, 'Истина'),
+        (FALSE, 'Ложь')
+    ]
+    result = models.CharField(max_length=300, choices=BASIC_RESULTS, blank=True, null=True, default=TRUE)
+    operation = models.ForeignKey(StrategyLogicOperation, on_delete=models.SET_NULL, blank=True, null=True)
+    after_result_operation = models.ForeignKey(StrategyOperation, on_delete=models.SET_NULL, blank=True, null=True)
+    after_result_logic_operation = models.ForeignKey(StrategyLogicOperation,
+        on_delete=models.SET_NULL, blank=True, null=True, related_name='nested_logic_operation')

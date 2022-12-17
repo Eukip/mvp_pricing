@@ -1,11 +1,13 @@
+from decimal import Decimal
 from django.db import models
-from product.models import Product
+from django.db.models import Max, Min, Avg
+from users.models import User
 
 
 # Create your models here.
 class Strategy(models.Model):
     title = models.CharField(max_length=300)
-    product = models.ForeignKey(Product, on_delete=models.SET_NULL, blank=True, null=True, related_name='strategy_product')
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name='strategy_user')
 
     def __str__(self) -> str:
         return self.title + ' ' + str(self.product.full_title)
@@ -13,39 +15,50 @@ class Strategy(models.Model):
 
 class StrategyElementVariable(models.Model):
     MEDIAN_PRICES_C = 'медианная цена конкурентов'
-    M_POPULAR_PRICE_C = 'мода цен конкурентов'
     MIN_PRICE_C = 'минимальная цена конкурентов'
     AVERAGE_PRICE_C = 'средняя цена конкурентов'
     MAX_PRICE_C = 'максимальная цена конкурентов'
     BASIC_VARIABLES = [
         (MEDIAN_PRICES_C, 'медианная цена конкурентов'),
-        (M_POPULAR_PRICE_C, 'мода цен конкурентов'),
         (MIN_PRICE_C, 'минимальная цена конкурентов'),
         (AVERAGE_PRICE_C, 'средняя цена конкурентов'),
         (MAX_PRICE_C, 'максимальная цена конкурентов'),
     ]
     title = models.CharField(max_length=300, choices=BASIC_VARIABLES, blank=True, null=True)
     custom_variable = models.IntegerField(blank=True, null=True)
+    strategy = models.ForeignKey(Strategy, on_delete=models.SET_NULL, blank=True, null=True)
+
+    # todo need to test properties
+    @property
+    def competitors_product_query(self):
+        from product.models import CompetitorProduct
+        queryset = CompetitorProduct.objects.exclude(competitor=self.strategy.product_strategy.creator)
+        return queryset
 
     @property
-    def median_prices_competitors(self):
-        count_competitors_product = Product.objects.filter()
-
-    @property
-    def most_popular_price_competitors(self):
-        pass
+    def median_prices_competitors(self): 
+        queryset = self.competitors_product_query
+        count_competitors_product = queryset.count()
+        values = queryset.product.values_list('current_price_before_discount', flat=True).order_by('current_price_before_discount')
+        if count_competitors_product % 2 == 1:
+            return values[int(round(count_competitors_product/2))]
+        else:
+            return sum(values[count_competitors_product/2-1:count_competitors_product/2+1])/Decimal(2.0)
 
     @property
     def min_price_competitors(self):
-        pass
+        queryset = self.competitors_product_query
+        return queryset.product.aggregate(Min('current_price_before_discount'))
 
     @property
     def average_price_competitors(self):
-        pass
+        queryset = self.competitors_product_query
+        return queryset.product.aggregate(Avg('current_price_before_discount'))
 
     @property
     def max_price_competitors(self):
-        pass
+        queryset = self.competitors_product_query
+        return queryset.product.aggregate(Max('current_price_before_discount'))
 
 
 class StrategyOperation(models.Model):

@@ -29,7 +29,7 @@ class StrategyElementVariable(models.Model):
 
     @property
     def median_prices_competitors(self):
-        pass
+        count_competitors_product = Product.objects.filter()
 
     @property
     def most_popular_price_competitors(self):
@@ -63,7 +63,7 @@ class StrategyOperation(models.Model):
     ]
     operation = models.CharField(max_length=300, choices=BASIC_OPERATIONS, default=EQUATION, blank=True, null=True)
     custom_value = models.PositiveIntegerField(blank=True, null=True)
-    variable = models.ForeignKey(StrategyElementVariable, on_delete=models.SET_NULL, null=True, blank=True)
+    variable = models.ForeignKey(StrategyElementVariable, on_delete=models.SET_NULL, null=True, blank=True, related_name='operation_variable')
     strategy = models.ForeignKey(Strategy, on_delete=models.SET_NULL, blank=True, null=True, related_name='strategyelemnt_strategy')
 
     def __str__(self) -> str:
@@ -82,7 +82,7 @@ class StrategyLogicOperation(models.Model):
         (EQUAL, '=='),
         (GREATER, '>'),
         (NOTEQUAL, '!='),
-        (LESSOREQUAL, '<='),
+        (LESSOREQUAL, '<='),  
         (GREATEROREQUAL, '>=')
     ]
     operation = models.CharField(max_length=300, choices=BASIC_OPERATIONS, default=EQUAL, blank=True, null=True)
@@ -102,3 +102,4 @@ class StrategyLogicOperationResult(models.Model):
     after_result_operation = models.ForeignKey(StrategyOperation, on_delete=models.SET_NULL, blank=True, null=True)
     after_result_logic_operation = models.ForeignKey(StrategyLogicOperation,
         on_delete=models.SET_NULL, blank=True, null=True, related_name='nested_logic_operation')
+ 

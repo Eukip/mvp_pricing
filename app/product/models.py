@@ -38,6 +38,7 @@ class RoleProduct(models.Model):
 class Product(models.Model):
     thing = models.CharField(max_length=300)
     vendor_code = models.CharField(max_length=300, blank=True, null=True)
+    product_article = models.CharField(max_length=300, blank=True, null=True)
     article_provider = models.CharField(max_length=300, blank=True, null=True)
     nomenclature_1c_code = models.IntegerField(blank=True, null=True)
     last_barcode = models.IntegerField(blank=True, null=True)

@@ -16,10 +16,26 @@ services:
       - ./.env
     depends_on:
       - db
+      - redis
+      - celery
   db:
     image: postgres:latest
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env
+  redis:
+    image: redis:latest
+    ports:
+      - 8080:6379
+  celery:
+    build:
+      context: ./app
+    command: celery -A config worker -l info
+    volumes:
+      - ./app/:/usr/src/app/
+    environment:
+      - DEBUG=1
     env_file:
       - ./.env
 

@@ -95,6 +95,9 @@ class StrategyLogicOperation(models.Model):
     parent_logical_operation = models.ForeignKey('StrategyLogicOperation', on_delete=models.SET_NULL, blank=True, null=True, related_name='nested_logical_operation')
 
 
+class IfLogicOperation(models.Model):
+    result = models.BooleanField(default=True)
+
 class StrategyOperation(models.Model):
     PLUS = '+'
     EQUATION = '='

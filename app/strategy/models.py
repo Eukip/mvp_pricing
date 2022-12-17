@@ -65,6 +65,36 @@ class StrategyElementVariable(models.Model):
         return self.strategy.product_strategy
 
 
+class StrategyLogicOperation(models.Model):
+    LESS = '<'
+    EQUAL = '=='
+    GREATER = '>'
+    NOTEQUAL = '!='
+    LESSOREQUAL = '<='
+    GREATEROREQUAL = '>='
+    BASIC_OPERATIONS = [
+        (LESS, '<'),
+        (EQUAL, '=='),
+        (GREATER, '>'),
+        (NOTEQUAL, '!='),
+        (LESSOREQUAL, '<='),  
+        (GREATEROREQUAL, '>=')
+    ]
+
+    TRUE = True
+    FALSE = False
+    BASIC_RESULTS = [
+        (TRUE, True),
+        (FALSE, False)
+    ]
+
+    operation = models.CharField(max_length=2, choices=BASIC_OPERATIONS, default=EQUAL, blank=True, null=True)
+    first_variable = models.ForeignKey(StrategyElementVariable, on_delete=models.SET_NULL, blank=True, null=True, related_name='first_logic_variable')
+    second_variable = models.ForeignKey(StrategyElementVariable, on_delete=models.SET_NULL, blank=True, null=True, related_name='second_logic_variable')
+    result = models.BooleanField(choices=BASIC_RESULTS, blank=True, null=True, default=TRUE)
+    parent_logical_operation = models.ForeignKey('StrategyLogicOperation', on_delete=models.SET_NULL, blank=True, null=True, related_name='nested_logical_operation')
+
+
 class StrategyOperation(models.Model):
     PLUS = '+'
     EQUATION = '='
@@ -82,41 +112,8 @@ class StrategyOperation(models.Model):
     custom_value = models.PositiveIntegerField(blank=True, null=True)
     variable = models.ForeignKey(StrategyElementVariable, on_delete=models.SET_NULL, null=True, blank=True, related_name='operation_variable')
     strategy = models.ForeignKey(Strategy, on_delete=models.SET_NULL, blank=True, null=True, related_name='strategyoperation_strategy')
+    logic_result = models.ForeignKey(StrategyLogicOperation,
+                                    on_delete=models.CASCADE, blank=True, null=True, related_name='operation_result')
 
     def __str__(self) -> str:
         return 'Операция' + str(self.id) + 'стратегии' + str(self.strategy.id)
-
-
-class StrategyLogicOperation(models.Model):
-    LESS = '<'
-    EQUAL = '=='
-    GREATER = '>'
-    NOTEQUAL = '!='
-    LESSOREQUAL = '<='
-    GREATEROREQUAL = '>='
-    BASIC_OPERATIONS = [
-        (LESS, '<'),
-        (EQUAL, '=='),
-        (GREATER, '>'),
-        (NOTEQUAL, '!='),
-        (LESSOREQUAL, '<='),  
-        (GREATEROREQUAL, '>=')
-    ]
-    operation = models.CharField(max_length=2, choices=BASIC_OPERATIONS, default=EQUAL, blank=True, null=True)
-    first_variable = models.ForeignKey(StrategyElementVariable, on_delete=models.SET_NULL, blank=True, null=True, related_name='first_logic_variable')
-    second_variable = models.ForeignKey(StrategyElementVariable, on_delete=models.SET_NULL, blank=True, null=True, related_name='second_logic_variable')
-
-
-class StrategyLogicOperationResult(models.Model):
-    TRUE = 'Истина'
-    FALSE = 'Ложь'
-    BASIC_RESULTS = [
-        (TRUE, 'Истина'),
-        (FALSE, 'Ложь')
-    ]
-    result = models.CharField(max_length=6, choices=BASIC_RESULTS, blank=True, null=True, default=TRUE)
-    logical_result = models.ForeignKey(StrategyLogicOperation, on_delete=models.CASCADE, blank=True, null=True, related_name='logical_result')
-    after_result_operation = models.ForeignKey(StrategyOperation, on_delete=models.SET_NULL, blank=True, null=True)
-    after_result_logic_operation = models.ForeignKey(StrategyLogicOperation,
-        on_delete=models.SET_NULL, blank=True, null=True, related_name='nested_logic_operation')
- 

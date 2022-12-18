@@ -5,41 +5,39 @@
             "priority": 10,
             "is_active": true,
             "description": "По выходным дням устанавливать цену, как минимальная конкурентов минус 3%. В остальное время держаться МВЦ. Данная стратегия требует настройки минимального порога в опциях",
-            "step_1": {
+            "steps": [{
                 "condition": {
                     "if": {
-                        "logical_1": {
-                            "variable_1": "Today",
-                            "operation": "EQUAL",
-                            "variable_2": "Суббота"
+                        "logicals": [{
+                            "variables": ["Today", "Суббота"],
+                            "operation": "EQUAL"
                         },
-                        "or": "or",
-                        "logical_2": {
-                            "variable_1": "Day-Week",
-                            "operation": "EQUAL",
-                            "variable_2": "Воскресенье"
-                        }, 
+                        {
+                            "variables": ["Today", "Воскресенье"],
+                            "operation": "EQUAL"
+                        }],
+                        "operand": "or",
                         "result": {
-                            "operation_1": {
-                                "variable_1": "MIN_PRICE_C",
+                            "operations": [{
+                                "variable": "MIN_PRICE_C",
                                 "do": "EQUAL"
                             },
-                            "operation_2": {
-                                "variable_1": 3,
+                            {
+                                "variable": 3,
                                 "do": "MINUS PERCENT"
-                            }
+                            }]
                         } 
                     },
                     "else": {
                         "result": {
-                            "operation_1": {
-                                "variable_1": "MOST_POPULAR_PRICE_C",
+                            "operations": [{
+                                "variable": "MOST_POPULAR_PRICE_C",
                                 "do": "EQUAL"
-                            }
+                            }]
                         }
                     }
                 }
-            }
+            }]
         }
     },
     {
@@ -58,7 +56,7 @@
                     },
                     "result": {}
                 },
-                "else":
+                "else": {}
             }
         }
 

@@ -1,0 +1,61 @@
+[
+    {
+        "strategy_1": {        
+        "title": "Дэмпинг на выходных",
+        "priority": 10,
+        "is_active": true,
+        "description": "По выходным дням устанавливать цену, как минимальная конкурентов минус 3%. В остальное время держаться МВЦ. Данная стратегия требует настройки минимального порога в опциях",
+        "steps": [{
+            "condition": {
+                "if": {
+                    "logicals": [{
+                        "variables": ["Today", "Суббота"],
+                        "operation": "EQUAL"
+                    },
+                    {
+                        "variables": ["Today", "Воскресенье"],
+                        "operation": "EQUAL"
+                    }],
+                    "operand": "or",
+                    "result": {
+                        "operations": [{
+                            "variable": "MIN_PRICE_C",
+                            "do": "EQUAL"
+                        },
+                        {
+                            "variable": 3,
+                            "do": "MINUS PERCENT"
+                        }]
+                    } 
+                },
+                "else": {
+                    "result": {
+                        "operations": [{
+                            "variable": "MOST_POPULAR_PRICE_C",
+                            "do": "EQUAL"
+                        }]
+                    }
+                }
+            }
+        }]
+    }
+},
+{
+    "result": [{
+        "variable": "MIN_PRICE_C",
+        "do": "EQUAL"
+    },
+    {
+        "variable": 3,
+        "do": "MINUS PERCENT"
+    }]
+},
+{
+    "result": {
+        "operations": [{
+            "variable": "MOST_POPULAR_PRICE_C",
+            "do": "EQUAL"
+        }]
+    }
+}
+]

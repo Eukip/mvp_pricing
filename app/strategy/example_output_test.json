@@ -19,7 +19,7 @@
                     "operand": "or",
                     "result": {
                         "operations": [{
-                            "variable": "MIN_PRICE_C",
+                            "variable": "минимальная цена конкурентов",
                             "do": "="
                         },
                         {
@@ -31,8 +31,8 @@
                 "else": {
                     "result": {
                         "operations": [{
-                            "variable": "MOST_POPULAR_PRICE_C",
-                            "do": "EQUAL"
+                            "variable": "медианная цена конкурентов",
+                            "do": "="
                         }]
                     }
                 }
@@ -41,19 +41,19 @@
 },
 {
     "result": [{
-        "variable": "MIN_PRICE_C",
-        "do": "EQUAL"
+        "variable": "минимальная цена конкурентов",
+        "do": "="
     },
     {
         "variable": 3,
-        "do": "MINUS PERCENT"
+        "do": "- %"
     }]
 },
 {
     "result": {
         "operations": [{
-            "variable": "MOST_POPULAR_PRICE_C",
-            "do": "EQUAL"
+            "variable": "медианная цена конкурентов",
+            "do": "="
         }]
     }
 }

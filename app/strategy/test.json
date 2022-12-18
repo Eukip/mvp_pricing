@@ -1,64 +1,131 @@
 [
     {
-        "strategy_1": {        
-            "title": "Дэмпинг на выходных",
-            "priority": 10,
-            "is_active": true,
-            "description": "По выходным дням устанавливать цену, как минимальная конкурентов минус 3%. В остальное время держаться МВЦ. Данная стратегия требует настройки минимального порога в опциях",
-            "steps": [{
-                "condition": {
-                    "if": {
-                        "logicals": [{
-                            "variables": ["Today", "Суббота"],
-                            "operation": "EQUAL"
+        "id": 1,    
+        "title": "Дэмпинг на выходных",
+        "priority": 10,
+        "is_active": true,
+        "description": "По выходным дням устанавливать цену, как минимальная конкурентов минус 3%. В остальное время держаться МВЦ. Данная стратегия требует настройки минимального порога в опциях",
+        "logic": [{
+            "condition": {
+                "if": {
+                    "logicals": [{
+                        "variables": ["today", "Суббота"],
+                        "operation": "=="
+                    },
+                    {
+                        "variables": ["today", "Воскресенье"],
+                        "operation": "=="
+                    }],
+                    "operand": "or",
+                    "result": {
+                        "operations": [{
+                            "variable": "минимальная цена конкурентов",
+                            "do": "="
                         },
                         {
-                            "variables": ["Today", "Воскресенье"],
-                            "operation": "EQUAL"
-                        }],
-                        "operand": "or",
-                        "result": {
-                            "operations": [{
-                                "variable": "MIN_PRICE_C",
-                                "do": "EQUAL"
-                            },
-                            {
-                                "variable": 3,
-                                "do": "MINUS PERCENT"
-                            }]
-                        } 
+                            "variable": 3,
+                            "do": "- %"
+                        }]
+                    } 
+                },
+                "else": {
+                    "result": {
+                        "operations": [{
+                            "variable": "медианная цена конкурентов",
+                            "do": "="
+                        }]
+                    }
+                }
+            }
+        }]
+    },
+    {
+        "id": 2,
+        "title": "Популярная цена",
+        "priority": 9,
+        "is_active": true,
+        "description": "Будет установлена цена, чаще всего встречающаяся у конкурентов. Эта стратегия может помочь автоматически соблюдать МРЦ.",
+        "logic": [{
+            "operations": [{
+                "variable": "медианная цена конкурентов",
+                "do": "="
+            }]
+        }]
+
+    },
+    {
+        "id": 2,
+        "title": "Стратегия минимальных цен",
+        "priority": 8,
+        "is_active": true,
+        "description": "Устанавливает цену на товар чуть ниже минимальной цены конкурентов. Данную стратегию можно также назвать «демпингом». Дает сильный эффект, если у Вас хорошие закупочные цены.",
+        "logic": [{
+            "operations": [
+                    {
+                        "variable":"минимальная цена конкурентов",
+                        "do": "="
                     },
-                    "else": {
+                    {
+                        "variable": 10,
+                        "do": "-"
+                    }
+            ]
+        }]
+    },
+    {
+        "id": 3,
+        "title": "Стратегия минимальных цен 2",
+        "priority": 7,
+        "is_active": true,
+        "description": "Устанавливает цену на товар чуть ниже.",
+        "logic": [
+            {
+                "operations": [
+                    {
+                        "variable": "минимальная цена конкурентов",
+                        "do": "="
+                    },
+                    {
+                        "variable": 5,
+                        "do": "- %"
+                    }
+                ]
+            }
+        ]
+
+    },
+    {
+        "id": 4,
+        "title": "Стратегия минимальных цен 3",
+        "priority": 6,
+        "is_active": true,
+        "description": "Устанавливает цену на товар чуть ниже.",
+        "logic": [
+            {
+                "condition": {
+                    "if": {
+                        "logicals": [
+                            {
+                                "variable": ["цена после всех скидок", "РРЦ"],
+                                "operation": ">=" 
+                            }
+                        ],
+                        "operand": null,
                         "result": {
-                            "operations": [{
-                                "variable": "MOST_POPULAR_PRICE_C",
-                                "do": "EQUAL"
-                            }]
+                            "operations": [
+                                {
+                                    "variable": "минимальная цена конкурентов",
+                                    "do": "="
+                                },
+                                {
+                                    "variable": 20,
+                                    "do": "-"
+                                }
+                            ]
                         }
                     }
                 }
-            }]
-        }
-    },
-    {
-        "strategy_id": 2,
-        "title": "Следование за конкурентом",
-        "priority": 9,
-        "is_active": true,
-        "description": "Test Strategy 2",
-        "step_1": {
-            "condition": {
-                "if": {
-                    "logical_1": {
-                        "variable_1": "AVERAGE_PRICE_C",
-                        "operation": "EQUAL",
-                        "variable_2": "ProductPrice"
-                    },
-                    "result": {}
-                },
-                "else": {}
             }
-        }
-
+        ]
     }
 ]

@@ -11,7 +11,8 @@ class StrategyVariable(object):
         "максимальная цена конкурентов": "max_price_competitors",
         "средняя цена конкурентов": "max_price_competitors",
         "цена после всех скидок": "price_after_all_discounts",
-        "today": "today"
+        "today": "today",
+        "РРЦ": "rrc"
     }
     
     def __init__(self, strategy_id) -> None:
@@ -43,8 +44,8 @@ class StrategyVariable(object):
     def max_price_competitors(self):
             return self.competitor_products.product.aggregate(Max('current_price_before_discount'))
 
-    def price_after_all_discounts(self): # todo доделать цену после всех скидок
-            return self.strategy.product_strategy
+    def price_after_all_discounts(self):
+            return self.strategy.price_after_discount
 
     def today(self):
         days = {
@@ -57,6 +58,9 @@ class StrategyVariable(object):
             "6": "Воскресенье"
         }
         return days[str(datetime.today().weekday())]
+    
+    def rrc(self):
+        return self.strategy.price_after_discount
 
 
 

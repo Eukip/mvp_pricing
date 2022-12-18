@@ -1,5 +1,6 @@
 from django.db.models import Max, Min, Avg
 from decimal import Decimal
+from datetime import datetime
 
 
 class StrategyVariable(object):
@@ -9,7 +10,8 @@ class StrategyVariable(object):
         "минимальная цена конкурентов": "min_price_competitors",
         "максимальная цена конкурентов": "max_price_competitors",
         "средняя цена конкурентов": "max_price_competitors",
-        "цена после всех скидок": "price_after_all_discounts"
+        "цена после всех скидок": "price_after_all_discounts",
+        "today": "today"
     }
     
     def __init__(self, strategy_id) -> None:
@@ -43,6 +45,19 @@ class StrategyVariable(object):
 
     def price_after_all_discounts(self): # todo доделать цену после всех скидок
             return self.strategy.product_strategy
+
+    def today(self):
+        days = {
+            "0": "Понедельник",
+            "1": "Вторник",
+            "2": "Среда",
+            "3": "Четверг",
+            "4": "Пятница",
+            "5": "Суббота",
+            "6": "Воскресенье"
+        }
+        return days[str(datetime.today().weekday())]
+
 
 
 class StrategyOperator(object):

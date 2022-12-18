@@ -18,7 +18,5 @@ def seacrh_product_by_article(article):
     
     product = Product.objects.create(
         thing=product_response.json()['article']['article']['card']['imt_name'],
-        
-    )
 
-    
+    )

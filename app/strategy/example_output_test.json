@@ -5,26 +5,26 @@
         "priority": 10,
         "is_active": true,
         "description": "По выходным дням устанавливать цену, как минимальная конкурентов минус 3%. В остальное время держаться МВЦ. Данная стратегия требует настройки минимального порога в опциях",
-        "steps": [{
+        "logic": [{
             "condition": {
                 "if": {
                     "logicals": [{
-                        "variables": ["Today", "Суббота"],
-                        "operation": "EQUAL"
+                        "variables": ["today", "Суббота"],
+                        "operation": "=="
                     },
                     {
-                        "variables": ["Today", "Воскресенье"],
-                        "operation": "EQUAL"
+                        "variables": ["today", "Воскресенье"],
+                        "operation": "=="
                     }],
                     "operand": "or",
                     "result": {
                         "operations": [{
                             "variable": "MIN_PRICE_C",
-                            "do": "EQUAL"
+                            "do": "="
                         },
                         {
                             "variable": 3,
-                            "do": "MINUS PERCENT"
+                            "do": "- %"
                         }]
                     } 
                 },

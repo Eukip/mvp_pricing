@@ -1,0 +1,33 @@
+{"logic": [{
+            "condition": {
+                "if": {
+                    "logicals": [{
+                        "variables": ["today", "Суббота"],
+                        "operation": "=="
+                    },
+                    {
+                        "variables": ["today", "Воскресенье"],
+                        "operation": "=="
+                    }],
+                    "operand": "or",
+                    "result": {
+                        "operations": [{
+                            "variable": "MIN_PRICE_C",
+                            "do": "="
+                        },
+                        {
+                            "variable": 3,
+                            "do": "- %"
+                        }]
+                    }
+                },
+                "else": {
+                    "result": {
+                        "operations": [{
+                            "variable": "MOST_POPULAR_PRICE_C",
+                            "do": "EQUAL"
+                        }]
+                    }
+                }
+            }
+        }]}

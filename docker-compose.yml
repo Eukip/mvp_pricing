@@ -38,13 +38,6 @@ services:
       - DEBUG=1
     env_file:
       - ./.env
-  mongodb:
-    image: mongo:latest
-    restart: always
-    env_file:
-      - ./.env
-    ports:
-      - 27017:27017
 
 volumes:
   postgres_data:

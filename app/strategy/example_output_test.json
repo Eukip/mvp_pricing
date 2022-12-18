@@ -1,6 +1,6 @@
 [
     {
-        "strategy_1": {        
+        "id": 1,    
         "title": "Дэмпинг на выходных",
         "priority": 10,
         "is_active": true,
@@ -38,7 +38,6 @@
                 }
             }
         }]
-    }
 },
 {
     "result": [{

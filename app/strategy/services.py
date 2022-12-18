@@ -1,3 +1,7 @@
+from django.db.models import Max, Min, Avg
+from decimal import Decimal
+
+
 class StrategyOperator():
     
     def __init__(self, current_price_before_discount, variable) -> None:
@@ -64,3 +68,42 @@ class StrategyLogicOperator():
 # если в result находится if 
 # по ходу парсинга нужно сразу выявлять нужный result 
 # функция должна возвращать нужный result из if или else
+
+# как варинт для монго подключить вторую бд 
+# написать модельки используя djongo
+
+
+
+def competitors_product_query(self):
+        from product.models import CompetitorProduct
+        queryset = CompetitorProduct.objects.exclude(competitor=self.strategy.product_strategy.creator)
+        return queryset
+
+
+def median_prices_competitors(self): 
+        queryset = self.competitors_product_query
+        count_competitors_product = queryset.count()
+        values = queryset.product.values_list('current_price_before_discount', flat=True).order_by('current_price_before_discount')
+        if count_competitors_product % 2 == 1:
+            return values[int(round(count_competitors_product/2))]
+        else:
+            return sum(values[count_competitors_product/2-1:count_competitors_product/2+1])/Decimal(2.0)
+
+
+def min_price_competitors(self):
+        queryset = self.competitors_product_query
+        return queryset.product.aggregate(Min('current_price_before_discount'))
+
+
+def average_price_competitors(self):
+        queryset = self.competitors_product_query
+        return queryset.product.aggregate(Avg('current_price_before_discount'))
+
+
+def max_price_competitors(self):
+        queryset = self.competitors_product_query
+        return queryset.product.aggregate(Max('current_price_before_discount'))
+
+
+def price_after_all_discounts(self):
+        return self.strategy.product_strategy

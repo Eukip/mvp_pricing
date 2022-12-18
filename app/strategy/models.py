@@ -4,6 +4,8 @@ from django.db.models import Max, Min, Avg
 from users.models import User
 
 
+# todo Изменить модели на датаклассы? или что-то подобное для сохранения и структуризации монго.
+# pymongo documents
 # Create your models here.
 class Strategy(models.Model):
     title = models.CharField(max_length=300)

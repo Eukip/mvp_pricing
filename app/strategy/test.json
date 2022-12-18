@@ -18,7 +18,7 @@
                             "variable_1": "Day-Week",
                             "operation": "EQUAL",
                             "variable_2": "Воскресенье"
-                        },
+                        }, 
                         "result": {
                             "operation_1": {
                                 "variable_1": "MIN_PRICE_C",

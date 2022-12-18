@@ -81,14 +81,17 @@ class Product(models.Model):
 
     creator = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
 
-    strategy = models.ForeignKey(Strategy, on_delete=models.SET_NULL, blank=True, null=True, related_name='product_strategy')
-
     @property
     def full_title(self):
         return self.thing + ' ' + self.title + ' ' + self.brand
 
     def __str__(self) -> str:
         return self.full_title
+
+
+class StrategyProduct(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True)
+    strategy = models.ForeignKey(Strategy, on_delete=models.CASCADE, blank=True, null=True)
 
 
 class Competitor(models.Model):

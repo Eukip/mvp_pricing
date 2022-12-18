@@ -43,8 +43,8 @@ class StrategyVariable(object):
     def max_price_competitors(self):
             return self.competitor_products.product.aggregate(Max('current_price_before_discount'))
 
-    def price_after_all_discounts(self): # todo доделать цену после всех скидок
-            return self.strategy.product_strategy
+    def price_after_all_discounts(self):
+            return self.strategy.price_after_discount
 
     def today(self):
         days = {

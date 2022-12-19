@@ -1,10 +1,6 @@
-from django.shortcuts import get_object_or_404
-
-from rest_framework import serializers, status
-from rest_framework.response import Response
-
-from .models import Product, StrategyProduct
-from strategy.models import Strategy
+from rest_framework import serializers
+from .utils import parse_excel, populate_excel, populate_products_db
+from .models import Product, StrategyProduct, FileModel
 from strategy.serializers import StrategySerializer
 
 class StrategyToProductSerializer(serializers.ModelSerializer):
@@ -21,3 +17,20 @@ class StrategyToProductSerializer(serializers.ModelSerializer):
             product=product, **strategy_data
         )
         return sp.strategy
+
+
+class FileOperationSerializer(serializers.Serializer):
+
+    file_in = serializers.FileField(allow_empty_file=False)
+
+    def validate(self, attrs):
+        return attrs
+
+    def create(self, validated_data):
+        title = str(validated_data.get("file_in"))
+        content = parse_excel(title)
+        file_out = populate_excel(title)
+        return FileModel.objects.create(title=title,
+                                        file_in=validated_data.get("file_in"),
+                                        file_out=file_out,
+                                        content=content)

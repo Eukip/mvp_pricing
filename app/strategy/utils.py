@@ -22,7 +22,7 @@ def parse_condition(condidtion: dict, strategy_id: int):
         return condidtion['else']['result']
 
 
-@shared_task
+
 def strategy_result(strategy_product):
     # func for celery task is here
     from strategy.models import JournalStrategy

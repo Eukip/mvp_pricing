@@ -14,6 +14,10 @@ class Strategy(models.Model):
     def __str__(self) -> str:
         return self.title + ' ' + str(self.product.full_title)
 
+    def save(self) -> None:
+        
+        return super().save()
+
 
 class JournalStrategy(models.Model):
     strategy = models.ForeignKey(Strategy, on_delete=models.CASCADE, blank=True, null=True)

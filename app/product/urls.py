@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import StrategyToProductView
+from .views import UploadFile
 
 urlpatterns = [
-    path("<int:product_id>", StrategyToProductView.as_view(), name="strategy_product")
+    path("file/", UploadFile.as_view(), name="file")
 ]

@@ -1,7 +1,7 @@
 from django.urls import path
 
-from .views import StrategyCreateView
+from .views import StrategyListCreateView
 
 urlpatterns = [
-    path("", StrategyCreateView.as_view(), name="strategy")
+    path("", StrategyListCreateView.as_view(), name="strategy")
 ]

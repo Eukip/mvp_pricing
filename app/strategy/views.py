@@ -13,7 +13,7 @@ from .serializers import StrategyCreateSerializer
 class StrategyCreateView(APIView):
 
     def get(self, request):
-        queryset = Strategy.objects.all()
+        queryset = Strategy.objects.filter()
         serializer = StrategyCreateSerializer(queryset)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

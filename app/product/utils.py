@@ -2,6 +2,7 @@ import os
 import pandas as pd
 from itertools import islice
 from product.models import Product
+import requests
 
 
 def parse_excel():

@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from .models import Strategy
 
-class StrategyCreateSerializer(serializers.Serializer):
+class StrategyCreateSerializer(serializers.ModelSerializer):
 
     id = serializers.IntegerField(read_only=True)
     title = serializers.CharField(max_length=300)

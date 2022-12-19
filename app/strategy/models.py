@@ -8,10 +8,13 @@ class Strategy(models.Model):
     priority = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=False)
     description = models.TextField(blank=True, null=True)
-    logic = models.JSONField(blank=True, null=True)
+    logic = models.JSONField(blank=True, default=dict)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name='strategy_user')
-
-    journals = models.JSONField(blank=True, null=True)
 
     def __str__(self) -> str:
         return self.title + ' ' + str(self.product.full_title)
+
+
+class JournalStrategy(models.Model):
+    strategy = models.ForeignKey(Strategy, on_delete=models.CASCADE, blank=True, null=True)
+    journals = models.JSONField(blank=True, default=dict)

@@ -2,6 +2,7 @@ import os
 import pandas as pd
 from itertools import islice
 from product.models import Product
+import requests
 
 #"/app/product/7eb50656ea82adcb.xlsx"
 

@@ -91,7 +91,7 @@ class Product(models.Model):
 
 class StrategyProduct(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True)
-    strategy = models.ForeignKey(Strategy, on_delete=models.CASCADE, blank=True, null=True)
+    strategy = models.ForeignKey(Strategy, on_delete=models.CASCADE, blank=True, null=True, related_name='sp_strategy')
 
 
 class Competitor(models.Model):

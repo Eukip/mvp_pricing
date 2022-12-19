@@ -1,7 +1,8 @@
 from __future__ import absolute_import
 import os
 from celery import Celery
-
+import django
+django.setup()
 
 from product.models import Product, StrategyProduct
 from strategy.models import Strategy

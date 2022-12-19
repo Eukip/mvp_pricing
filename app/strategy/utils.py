@@ -28,11 +28,11 @@ def parse_condition(condidtion: dict, strategy_id: int):
                 variable_object=strategy_variables(strategy_id=strategy_id),
                 operand=condidtion['if']['operand'])
     if if_result.calculate():
-        if list(condidtion['if']['result'].keys()[0]) == "condition":
+        if list(condidtion['if']['result'].keys())[0] == "condition":
             parse_condition(condidtion=condidtion['if']['result'], strategy_id=strategy_id)
         return condidtion['if']['result']
     else:
-        if list(condidtion['else']['result'].keys()[0]) == "conditional":
+        if list(condidtion['else']['result'].keys())[0] == "conditional":
             parse_condition(condidtion=condidtion['else']['result'], strategy_id=strategy_id)
         return condidtion['else']['result']
 
@@ -46,7 +46,7 @@ def strategy_result(json_field: list[dict], strategy_product):
         if list(i.keys()) == ["operations"]:
             strategy_result = i['operations']
         
-        if list(i.keys()[0]) == "condition":
+        if list(i.keys())[0] == "condition":
             ref_dict = i['condition']
             strategy_result = parse_condition(condidtion=ref_dict, strategy_id=strategy_product.strategy.id)
 

@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 
 from drf_yasg.utils import swagger_auto_schema
 
-from serializers import StrategyToProductSerializer
+from serializers import StrategyToProductSerializer, FileOperationSerializer
 
 
 class StrategyToProductView(APIView):
@@ -15,3 +15,17 @@ class StrategyToProductView(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class UploadFile(APIView):
+
+    @swagger_auto_schema(request_body=FileOperationSerializer)
+    def post(self, request):
+        serializer = FileOperationSerializer(request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response({"message": "File saved",
+                            "file_out": serializer.validated_data.get("file_out")},
+                            status=status.HTTP_201_CREATED)
+
+

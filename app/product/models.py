@@ -119,8 +119,7 @@ class AnalogProduct(models.Model):
 
 class FileModel(models.Model):
 
-    title = models.CharField(max_length=100, unique=True)
+    title = models.CharField(max_length=100, unique=True, null=True)
     file_in = models.FileField(upload_to='files/', null=True, blank=True)
-    file_in_path = models.CharField(null=True, blank=True)
     file_out = models.FileField(upload_to='files/', null=True, blank=True)
-    # content = models.
+    data = models.TextField(null=True, blank=True)

@@ -4,6 +4,7 @@ from rest_framework import serializers, status
 from rest_framework.response import Response
 
 from .models import Product, StrategyProduct, FileModel
+from .utils import parse_excel, populate_excel, populate_products_db
 from app.strategy.models import Strategy
 
 
@@ -25,12 +26,18 @@ class StrategyToProductSerializer(serializers.Serializer):
 
 class FileOperationSerializer(serializers.Serializer):
 
-    title = serializers.Charfield(required=True, max_length=100)
     file_in = serializers.FileField(allow_empty_file=False)
 
     def validate(self, attrs):
         return attrs
 
     def create(self, validated_data):
-        return FileModel.objects.create(title=validated_data.get("title"),
-                                        file_in=validated_data.get("file_in"))
+        title = str(validated_data.get("file_in"))
+        content = parse_excel(title)
+        file_out = populate_excel(title)
+        return FileModel.objects.create(title=title,
+                                        file_in=validated_data.get("file_in"),
+                                        file_out=file_out,
+                                        content=content)
+
+

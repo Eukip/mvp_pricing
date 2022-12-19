@@ -22,7 +22,9 @@ class StrategyVariable(object):
         self.competitor_products_count = self.competitor_products.count()
 
     @classmethod
-    def indirect(self, method_name: str):
+    def indirect(self, method_name):
+        if type(method_name) == int:
+            return method_name
         method_name = self.variables_names[method_name]
         method = getattr(self, method_name, lambda : "Такого нету")
         return method()
@@ -76,36 +78,48 @@ class StrategyOperator(object):
         "- %": "minus_percent"
     }
 
-    def __init__(self, current_price_before_discount, variable) -> None:
+    result = None
+    bar = None
+    foo = None
+
+    
+    def __init__(self, current_price_before_discount: int, variable_object: object, operations: list[dict]) -> None:
         self.target_strategy = current_price_before_discount
-        self.variable = variable
+        self.variable_object = variable_object
+        self.operations = operations
     
     @classmethod
-    def indirect(self, method_name: str):
-        method_name = self.basic_operations[method_name]
-        method = getattr(self, method_name, lambda : "Такого нету")
-        return method()
+    def calculate(self):
+        for i in self.operations:
+            self.foo = self.variable_object.indirect(i['variable'])
+            self.bar = self.target_strategy
+            method_name = self.basic_operations[i['do']]
+            getattr(self, method_name, lambda : "Такого нету")
+        return self.result
 
     def plus(self) -> int:
-        return self.target_strategy + self.variable
+        self.result = self.bar + self.foo
+        return self.result
     
     def minus(self) -> int:
-        return self.target_strategy - self.variable
-    
-    def quation(self) -> int:
-        return self.variable
+        self.result = self.bar - self.foo
+        return self.result
 
     def multiply(self) -> int:
-        return self.target_strategy * self.variable
+        self.result = self.bar * self.foo
+        return self.result
     
     def divide(self) -> int:
-        return self.target_strategy / self.variable
+        self.result = self.bar / self.foo
+        return self.result
     
     def plus_percent(self) -> int:
-        return self.target_strategy - ((self.target_strategy / 100) * self.variable)
+        self.result = self.bar - ((self.bar / 100) * self.foo)
+        return self.result
 
     def minus_percent(self) -> int:
-        return self.target_strategy + ((self.target_strategy / 100) * self.variable)
+        self.result = self.bar + ((self.bar / 100) * self.foo)
+        return self.result
 
 
 class StrategyLogicOperator(object):
@@ -119,30 +133,74 @@ class StrategyLogicOperator(object):
         ">=": "greaterorequal"
     }
 
-    def __init__(self, first_variable, second_variable) -> None:
-        self.first_variable = first_variable
-        self.second_variable = second_variable
+    basic_operands = {
+        "or": "method_or",
+        "and": "method_and"
+    }
+
+    foo = None
+    bar = None
+
+    operand_variables = []
+
+    result = False
+
+    first_variable = None
+    second_variable = None
+
+    def __init__(self, logicals:list[dict], variable_object: object, operand:str) -> None:
+        self.logicals = logicals
+        self.variable_object = variable_object
+        self.operand = operand
+        
+    @classmethod
+    def calculate(self):
+        for i in self.logicals:
+            self.first_variable = self.variable_object.indirect(i['variables'][0])
+            self.second_variable = self.variable_object.indirect(i['variables'][1])
+            calculate_method_name = self.basic_operations[i['operation']]
+            getattr(self, calculate_method_name, lambda: Exception)
+        for j in range(len(self.operand_variables)) - 1:
+            self.foo = self.operand_variables[j] 
+            self.bar = self.operand_variables[j + 1]
+            self.result = getattr(self, self.basic_operands[self.operand], lambda: Exception)
+        return self.result
+
+    @classmethod
+    def less(self) -> bool:
+        result = self.first_variable < self.second_variable
+        return self.operand_variables.append(result)
+
+    @classmethod
+    def equal(self) -> bool:
+        result = self.first_variable == self.second_variable
+        return self.operand_variables.append(result)
+
+    @classmethod
+    def greater(self) -> bool:
+        result = self.first_variable > self.second_variable
+        return self.operand_variables.append(result)
+
+    @classmethod
+    def notequal(self) -> bool:
+        result = self.first_variable != self.second_variable
+        return self.operand_variables.append(result)
     
     @classmethod
-    def indirect(self, method_name: str):
-        method_name = self.basic_operations[method_name]
-        method = getattr(self, method_name, lambda : "Такого нету")
-        return method()
-
-    def less(self) -> bool:
-        return self.first_variable < self.second_variable
-
-    def equal(self) -> bool:
-        return self.first_variable == self.second_variable
-
-    def greater(self) -> bool:
-        return self.first_variable > self.second_variablestrategy.product_strategy.creator
-
-    def notequal(self) -> bool:
-        return self.first_variable != self.second_variable
-    
     def lessorequal(self) -> bool:
-        return self.first_variable <= self.second_variable
+        result = self.first_variable <= self.second_variable
+        return self.operand_variables.append(result)
 
+    @classmethod
     def greaterorequal(self) -> bool:
-        return self.first_variable >= self.second_variable
+        result = self.first_variable >= self.second_variable
+        return self.operand_variables.append(result)
+
+    @classmethod
+    def method_or(self) -> bool:
+        self.result = self.foo or self.bar
+        return self.result 
+    @classmethod
+    def method_and(self) -> bool:
+        self.result = self.foo and self.bar
+        return self.result

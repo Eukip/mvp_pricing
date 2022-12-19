@@ -115,3 +115,12 @@ class AnalogProduct(models.Model):
 
     def __str__(self) -> str:
         return 'Аналог' + self.id + " " + self.product.title
+
+
+class FileModel(models.Model):
+
+    title = models.CharField(max_length=100, unique=True)
+    file_in = models.FileField(upload_to='files/', null=True, blank=True)
+    file_in_path = models.CharField(null=True, blank=True)
+    file_out = models.FileField(upload_to='files/', null=True, blank=True)
+    # content = models.

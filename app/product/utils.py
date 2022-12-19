@@ -6,7 +6,7 @@ from product.models import Product
 
 def parse_excel():
     # todo create func paramter for file
-    df = pd.read_excel(os.getcwd() + "/app/parsing/7eb50656ea82adcb.xlsx")
+    df = pd.read_excel(os.getcwd() + "/app/product/7eb50656ea82adcb.xlsx")
     result = {}
     for item in range(1, len(df)):
         temp_dict = {"Бренд": df["Бренд"][item - 1],
@@ -33,7 +33,7 @@ def parse_excel():
 
 
 def populate_excel(data):
-    df = pd.read_excel(os.getcwd() + "/app/parsing/7eb50656ea82adcb.xlsx")
+    df = pd.read_excel(os.getcwd() + "/app/product/7eb50656ea82adcb.xlsx")
     for item in data:
         print(item.keys())
         item_key = list(item.keys())[0]

@@ -6,6 +6,7 @@ from drf_yasg.utils import swagger_auto_schema
 
 from serializers import StrategyToProductSerializer
 
+
 class StrategyToProductView(APIView):
 
     @swagger_auto_schema(request_body=StrategyToProductSerializer)
@@ -14,4 +15,3 @@ class StrategyToProductView(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-

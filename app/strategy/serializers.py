@@ -9,5 +9,3 @@ class StrategySerializer(serializers.ModelSerializer):
         fields = [
             "title", "priority", "is_active", "description", "logic"
         ]
-
-

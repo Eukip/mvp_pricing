@@ -22,6 +22,7 @@ def parse_condition(condidtion: dict, strategy_id: int):
         return condidtion['else']['result']
 
 
+@shared_task
 def strategy_result(strategy_product):
     # func for celery task is here
     from strategy.models import JournalStrategy
@@ -52,7 +53,9 @@ def strategy_result(strategy_product):
 
 def get_needed_strategy_logic(strategy_id: int):
     from strategy.models import Strategy
+    from product.models import StrategyProduct
     current_strategy = Strategy.objects.get(id=strategy_id)
     current_strategy_product = StrategyProduct.objects.get(strategy=current_strategy)
     needed_strategy = StrategyProduct.objects.filter(product=current_strategy_product.product).fitler(strategy__is_active=True).order_by('strategy__priority').first()
-    return needed_strategy
+    needed_strategy_product_object = StrategyProduct.objects.filter(strategy=needed_strategy)
+    return needed_strategy_product_object

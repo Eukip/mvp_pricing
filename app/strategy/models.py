@@ -1,6 +1,6 @@
 from django.db import models
 from users.models import User
-
+from .utils import get_needed_strategy_logic, strategy_result
 
 # Create your models here.
 class Strategy(models.Model):
@@ -15,8 +15,9 @@ class Strategy(models.Model):
         return self.title + ' ' + str(self.product.full_title)
 
     def save(self) -> None:
-        
-        return super().save()
+        super().save()
+        needed_strategy_product = get_needed_strategy_logic(self.pk)
+        strategy_result(needed_strategy_product).delay()
 
 
 class JournalStrategy(models.Model):

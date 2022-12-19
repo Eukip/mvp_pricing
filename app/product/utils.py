@@ -4,10 +4,11 @@ from itertools import islice
 from product.models import Product
 import requests
 
+#"/app/product/7eb50656ea82adcb.xlsx"
 
-def parse_excel():
+def parse_excel(file_title: str):
     # todo create func paramter for file
-    df = pd.read_excel(os.getcwd() + "/app/parsing/7eb50656ea82adcb.xlsx")
+    df = pd.read_excel(os.getcwd() + "/data/files" + file_title)
     result = {}
     for item in range(1, len(df)):
         temp_dict = {"Бренд": df["Бренд"][item - 1],
@@ -32,20 +33,20 @@ def parse_excel():
         result["item_" + str(item)] = temp_dict
     return result
 
-
-def populate_excel(data):
-    df = pd.read_excel(os.getcwd() + "/app/parsing/7eb50656ea82adcb.xlsx")
+#"/app/product/7eb50656ea82adcb.xlsx"
+def populate_excel(data, file_name: str):
+    df = pd.read_excel(os.getcwd() + "/data/files/" + file_name)
     for item in data:
         print(item.keys())
         item_key = list(item.keys())[0]
         row_to_update = df["Артикул поставщика"] == str(item_key)
         df.loc[row_to_update, "Новая розн. цена (до скидки)"] = item[item_key]["new_price"]
         df.loc[row_to_update, "Согласованная скидка, %"] = item[item_key]["agreed_discount"]
-    df.to_excel("output.xlsx")
+    df.to_excel("output" + file_name + "xlsx")
 
 
-def populate_products_db():
-    data = parse_excel()
+def populate_products_db(file_path):
+    data = parse_excel(file_path)
     data_keys = data.keys()
     batch_size = len(data_keys)
     objs = (Product(thing=data[key]["Бренд"],

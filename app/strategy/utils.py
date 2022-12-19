@@ -22,12 +22,13 @@ def parse_condition(condidtion: dict, strategy_id: int):
         return condidtion['else']['result']
 
 
-def strategy_result(json_field: list[dict], strategy_product):
+def strategy_result(strategy_product):
+    # func for celery task is here
     from strategy.models import JournalStrategy
     strategy_result = None
     current_price_before_discount = strategy_product.product.current_price_before_discount
 
-    for i in json_field:
+    for i in strategy_product.logic:
         if list(i.keys()) == ["operations"]:
             strategy_result = i['operations']
         
@@ -41,6 +42,7 @@ def strategy_result(json_field: list[dict], strategy_product):
         operations=strategy_result).calculate()
 
     strategy_product.product.new_price_before_discount = new_price_by_strategy
+    strategy_product.save()
     JournalStrategy.objects.create(
         strategy=strategy_product.strategy,
         journals={

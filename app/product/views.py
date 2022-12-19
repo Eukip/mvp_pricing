@@ -18,13 +18,3 @@ class UploadFile(APIView):
             return Response({"message": "File saved",
                             "file_out": serializer.validated_data.get("file_out")},
                             status=status.HTTP_201_CREATED)
-
-class UploadFile(APIView):
-
-    def post(self, request):
-        serializer = FileOperationSerializer(request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response({"message": "File saved",
-                            "file_out": serializer.validated_data.get("file_out")},
-                            status=status.HTTP_201_CREATED)

@@ -1,6 +1,4 @@
-from product.models import StrategyProduct
-from .services import StrategyLogicOperator, StrategyOperator, StrategyVariable
-from datetime import datetime
+from .services import StrategyLogicOperator, StrategyVariable
 
 
 def strategy_variables(strategy_id):

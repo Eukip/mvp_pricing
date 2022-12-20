@@ -1,8 +1,8 @@
-from config.celery import app
+# from config.celery import app
 from datetime import datetime
 
 
-@app.task(name='resolve_strategy')
+# @app.task(name='resolve_strategy')
 def strategy_result(strategy_product):
     # func for celery task is here
     from strategy.models import JournalStrategy

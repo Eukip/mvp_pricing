@@ -27,7 +27,7 @@ services:
   redis:
     image: redis:latest
     ports:
-      - 8080:6379
+      - 6379:6379
   celery:
     build:
       context: ./app

@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 import os
-from celery import Celery
+from celery import Celery, shared_task
 
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
@@ -11,6 +11,6 @@ celery_app.config_from_object("django.conf:settings", namespace="CELERY")
 
 celery_app.autodiscover_tasks()
 
-@celery_app.task
+@shared_task
 def first_task():
     print("Hello, World!")

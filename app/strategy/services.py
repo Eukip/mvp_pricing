@@ -23,7 +23,8 @@ class StrategyVariable(object):
     def __init__(self, strategy_id) -> None:
         from product.models import CompetitorProduct, Strategy
         self.strategy = Strategy.objects.get(id=strategy_id)
-        self.competitor_products = CompetitorProduct.objects.filter(product=self.strategy.sp_strategy.get().product)
+        print(self.strategy.sp_strategy.get().product)
+        self.competitor_products = CompetitorProduct.objects.exclude(product=self.strategy.sp_strategy.get().product)
         self.competitor_products_count = self.competitor_products.count()
 
 
@@ -46,20 +47,21 @@ class StrategyVariable(object):
 
     @classmethod
     def min_price_competitors(self):
-            queryset = self.competitors_product_query
-            return queryset.product.aggregate(Min('current_price_before_discount'))
+        queryset = self.competitor_products
+        print(self.competitor_products)
+        return queryset.aggregate(Min('product__current_price_before_discount'))
     
     @classmethod
     def average_price_competitors(self):
-            return self.competitor_products.product.aggregate(Avg('current_price_before_discount'))
+        return self.competitor_products.product.aggregate(Avg('current_price_before_discount'))
 
     @classmethod
     def max_price_competitors(self):
-            return self.competitor_products.product.aggregate(Max('current_price_before_discount'))
+        return self.competitor_products.product.aggregate(Max('current_price_before_discount'))
 
     @classmethod
     def price_after_all_discounts(self):
-            return self.strategy.price_after_discount
+        return self.strategy.sp_strategy.get().product.price_after_dicount
 
     @classmethod
     def today(self):
@@ -76,7 +78,7 @@ class StrategyVariable(object):
     
     @classmethod
     def rrc(self):
-        return self.strategy.price_after_discount
+        return self.strategy.sp_strategy.get().product.price_after_dicount
 
 
 
@@ -109,8 +111,9 @@ class StrategyOperator(object):
     
     @classmethod
     def calculate(self):
-        print(self.variable_object)
-        for i in self.operations:
+        print(self.operations)
+        for i in self.operations['operations']:
+            print(i)
             self.foo = self.variable_object.indirect(i['variable'])
             self.bar = self.target_strategy
             method_name = self.basic_operations[i['do']]
@@ -174,6 +177,9 @@ class StrategyLogicOperator(object):
     first_variable = None
     second_variable = None
 
+    logicals = None
+
+    @classmethod
     def __init__(self, logicals:list[dict], variable_object: object, operand:str) -> None:
         self.logicals = logicals
         self.variable_object = variable_object
@@ -182,11 +188,12 @@ class StrategyLogicOperator(object):
     @classmethod
     def calculate(self):
         for i in self.logicals:
-            self.first_variable = self.variable_object.indirect(i['variables'][0])
-            self.second_variable = self.variable_object.indirect(i['variables'][1])
+            print(i)
+            self.first_variable = self.variable_object.indirect(i['variable'][0])
+            self.second_variable = self.variable_object.indirect(i['variable'][1])
             calculate_method_name = self.basic_operations[i['operation']]
             getattr(self, calculate_method_name, lambda: Exception)
-        for j in range(len(self.operand_variables)) - 1:
+        for j in range(len(self.operand_variables) - 1):
             self.foo = self.operand_variables[j] 
             self.bar = self.operand_variables[j + 1]
             self.result = getattr(self, self.basic_operands[self.operand], lambda: Exception)

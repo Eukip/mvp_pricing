@@ -1,7 +1,8 @@
 from django.db import models
 from users.models import User
 from .utils import get_needed_strategy_logic
-from config.tasks import strategy_result
+from config.tasks import strategy_result as task_result
+from .utils import strategy_result
 
 
 # Create your models here.
@@ -19,7 +20,7 @@ class Strategy(models.Model):
     def save(self) -> None:
         super().save()
         needed_strategy_product = get_needed_strategy_logic(self.pk)
-        strategy_result.delay(needed_strategy_product)
+        strategy_result(needed_strategy_product)
         super().save()
 
 

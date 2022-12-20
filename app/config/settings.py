@@ -11,6 +11,7 @@ DEBUG = os.environ.get("DEBUG", default=0)
 
 
 ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = ["https://8d55-94-143-198-2.eu.ngrok.io"]
 
 
 # Application definition

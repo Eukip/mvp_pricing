@@ -23,7 +23,7 @@ services:
     image: postgres:latest
     restart: always
     volumes:
-      - ./app/postgres_data:/var/lib/postgresql/data/
+      - postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./.env
   redis:

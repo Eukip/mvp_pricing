@@ -8,7 +8,8 @@ def get_wb_catalog_filter_by_query(query: str):
     filters_by_query = requests.get(
         url = f"https://search.wb.ru/exactmatch/ru/common/v4/search?appType=1&couponsGeo=12,3,18,15,21&curr=rub&dest=-1029256,-102269,-2162196,-1257786&emp=0&lang=ru&locale=ru&pricemarginCoeff=1.0&query={query}&reg=0&regions=80,64,83,4,38,33,70,69,86,75,30,40,48,1,22,66,31,68,71&resultset=filters&spp=0&suppressSpellcheck=false&xsubject=2223"
     )
-
+    print(filters_by_query)
+    print(catalog_by_query)
     result = {
         "maxPriceU": filters_by_query.json()['data']['filters'][3]['maxPriceU'],
         "minPriceU": filters_by_query.json()['data']['filters'][3]['minPriceU'],
@@ -17,7 +18,7 @@ def get_wb_catalog_filter_by_query(query: str):
 
     for i in catalog_by_query.json()['data']['products']:
         product = {
-            "averagePrice": i['averagePrice'],
+            # "averagePrice": i['averagePrice'],
             "brand": i['brand'],
             "article": i['id'],
             "name": i['name'],

@@ -1,7 +1,8 @@
 from django.db import models
 from users.models import User
-from .utils import get_needed_strategy_logic
-from .tasks import strategy_result
+# from .utils import get_needed_strategy_logic
+from config.tasks import sample_task
+
 
 # Create your models here.
 class Strategy(models.Model):
@@ -13,12 +14,14 @@ class Strategy(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name='strategy_user')
 
     def __str__(self) -> str:
-        return self.title + ' ' + str(self.product.full_title)
+        return self.title
 
     def save(self) -> None:
-        needed_strategy_product = get_needed_strategy_logic(self.pk)
-        strategy_result.delay(needed_strategy_product)
+        sample_task.delay()
         super().save()
+        # needed_strategy_product = get_needed_strategy_logic(self.pk)
+        # strategy_result.delay(needed_strategy_product)
+        # super().save()
 
 
 class JournalStrategy(models.Model):

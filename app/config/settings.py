@@ -1,5 +1,7 @@
 import os
 from pathlib import Path
+from celery.schedules import crontab
+from .tasks import sample_task
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -139,7 +141,14 @@ REST_FRAMEWORK = {
 }
 
 
-# Redis
+# Redis and Celery
 
 CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://redis:6379")
 CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND", "redis://redis:6379")
+
+CELERY_BEAT_SCHEDULE = {
+    "sample_task": {
+        "task": "sample_task",
+        "schedule": crontab(minute="*/1"),
+    },
+}

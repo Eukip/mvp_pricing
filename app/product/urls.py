@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import UploadFile
+from .views import SearchProductWB
 
 urlpatterns = [
-    path("file/", UploadFile.as_view(), name="file")
+    path("search/", SearchProductWB.as_view(), name="file")
 ]

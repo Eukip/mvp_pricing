@@ -1,5 +1,7 @@
 import os
 from pathlib import Path
+from celery.schedules import crontab
+from .tasks import sample_task
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -110,8 +112,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "static"
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = '/static/'
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "static"),
+# ]
 
 MEDIA_URL = "/data/"
 MEDIA_ROOT = "data"
@@ -136,7 +141,14 @@ REST_FRAMEWORK = {
 }
 
 
-# Redis
+# Redis and Celery
 
-CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://redis:6379/0")
-CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND", "redis://redis:6379/0")
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://redis:6379")
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND", "redis://redis:6379")
+
+CELERY_BEAT_SCHEDULE = {
+    "sample_task": {
+        "task": "sample_task",
+        "schedule": crontab(minute="*/1"),
+    },
+}

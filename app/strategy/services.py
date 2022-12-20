@@ -14,12 +14,18 @@ class StrategyVariable(object):
         "today": "today",
         "РРЦ": "rrc"
     }
-    
+
+    strategy = None
+    competitor_products = None
+    competitor_products_count = None
+
+    @classmethod
     def __init__(self, strategy_id) -> None:
         from product.models import CompetitorProduct, Strategy
         self.strategy = Strategy.objects.get(id=strategy_id)
-        self.competitor_products = CompetitorProduct.objects.exclude(competitor=self.strategy.product_strategy.creator)
+        self.competitor_products = CompetitorProduct.objects.filter(product=self.strategy.sp_strategy.get().product)
         self.competitor_products_count = self.competitor_products.count()
+
 
     @classmethod
     def indirect(self, method_name):
@@ -29,26 +35,33 @@ class StrategyVariable(object):
         method = getattr(self, method_name, lambda : "Такого нету")
         return method()
 
+    @classmethod
     def median_prices_competitors(self): 
-            values = self.competitor_products.product.values_list('current_price_before_discount', flat=True).order_by('current_price_before_discount')
+            values = self.competitor_products.values_list('product__current_price_before_discount', flat=True).order_by('product__current_price_before_discount')
+            print(values)
             if self.competitor_products_count % 2 == 1:
                 return values[int(round(self.competitor_products_count/2))]
             else:
                 return sum(values[self.competitor_products_count/2-1:self.competitor_products_count/2+1])/Decimal(2.0)
 
+    @classmethod
     def min_price_competitors(self):
             queryset = self.competitors_product_query
             return queryset.product.aggregate(Min('current_price_before_discount'))
-
+    
+    @classmethod
     def average_price_competitors(self):
             return self.competitor_products.product.aggregate(Avg('current_price_before_discount'))
 
+    @classmethod
     def max_price_competitors(self):
             return self.competitor_products.product.aggregate(Max('current_price_before_discount'))
 
+    @classmethod
     def price_after_all_discounts(self):
             return self.strategy.price_after_discount
 
+    @classmethod
     def today(self):
         days = {
             "0": "Понедельник",
@@ -61,6 +74,7 @@ class StrategyVariable(object):
         }
         return days[str(datetime.today().weekday())]
     
+    @classmethod
     def rrc(self):
         return self.strategy.price_after_discount
 
@@ -82,7 +96,12 @@ class StrategyOperator(object):
     bar = None
     foo = None
 
+    operations = None
+    variable_object = None
+    target_strategy = None
     
+    
+    @classmethod
     def __init__(self, current_price_before_discount: int, variable_object: object, operations: list[dict]) -> None:
         self.target_strategy = current_price_before_discount
         self.variable_object = variable_object
@@ -90,6 +109,7 @@ class StrategyOperator(object):
     
     @classmethod
     def calculate(self):
+        print(self.variable_object)
         for i in self.operations:
             self.foo = self.variable_object.indirect(i['variable'])
             self.bar = self.target_strategy
@@ -97,26 +117,32 @@ class StrategyOperator(object):
             getattr(self, method_name, lambda : "Такого нету")
         return self.result
 
+    @classmethod
     def plus(self) -> int:
         self.result = self.bar + self.foo
         return self.result
     
+    @classmethod
     def minus(self) -> int:
         self.result = self.bar - self.foo
         return self.result
 
+    @classmethod
     def multiply(self) -> int:
         self.result = self.bar * self.foo
         return self.result
     
+    @classmethod
     def divide(self) -> int:
         self.result = self.bar / self.foo
         return self.result
     
+    @classmethod
     def plus_percent(self) -> int:
         self.result = self.bar - ((self.bar / 100) * self.foo)
         return self.result
 
+    @classmethod
     def minus_percent(self) -> int:
         self.result = self.bar + ((self.bar / 100) * self.foo)
         return self.result

@@ -1,7 +1,7 @@
 FROM python:latest
 
 WORKDIR /usr/src/app
-
+RUN chmod -R 777 .
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 

@@ -1,5 +1,4 @@
-from product.models import StrategyProduct
-from .services import StrategyLogicOperator, StrategyOperator, StrategyVariable
+from .services import StrategyLogicOperator, StrategyVariable
 from datetime import datetime
 
 
@@ -27,6 +26,5 @@ def get_needed_strategy_logic(strategy_id: int):
     from product.models import StrategyProduct
     current_strategy = Strategy.objects.get(id=strategy_id)
     current_strategy_product = StrategyProduct.objects.get(strategy=current_strategy)
-    needed_strategy = StrategyProduct.objects.filter(product=current_strategy_product.product).fitler(strategy__is_active=True).order_by('strategy__priority').first()
-    needed_strategy_product_object = StrategyProduct.objects.filter(strategy=needed_strategy)
-    return needed_strategy_product_object
+    needed_strategy = StrategyProduct.objects.filter(product=current_strategy_product.product).filter(strategy__is_active=True).order_by('strategy__priority').first()
+    return needed_strategy.id

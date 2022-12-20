@@ -26,6 +26,7 @@ class StrategyVariable(object):
         self.competitor_products = CompetitorProduct.objects.filter(product=self.strategy.sp_strategy.get().product)
         self.competitor_products_count = self.competitor_products.count()
 
+
     @classmethod
     def indirect(self, method_name):
         if type(method_name) == int:
